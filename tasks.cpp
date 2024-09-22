@@ -315,7 +315,7 @@ void task5() {
   const auto res_loop = count_loop({large_str, large_str_size}, substr);
   const auto duration_loop = sw.duration();
 
-  //assert(res_loop == res_simd);
+  assert(res_loop == res_simd);
   std::cout << std::format("Res loop vs simd: {} vs {}\n", res_loop, res_simd);
 
   std::cout << std::format(
