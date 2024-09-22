@@ -280,7 +280,7 @@ void task4(bool print_arrays) {
 }
 
 namespace t5 {
-constexpr auto n_occurences = 500;  // number of occurences
+constexpr auto n_occurences = 500;
 constexpr auto simd_alignment = 32uz;
 }  // namespace t5
 
