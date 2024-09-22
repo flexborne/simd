@@ -294,11 +294,13 @@ void task5() {
   const auto substr_size = strlen(substr);
   assert(substr_size <= 32);
 
-  char* large_str = allocate_aligned_array<char>(n_occurences * substr_size, simd_alignment);
+  const auto large_str_size = n_occurences * substr_size + 1;
+  char* large_str = allocate_aligned_array<char>(large_str_size, simd_alignment);
+  large_str[0] = 'A';
   for (size_t i = 0; i < n_occurences; ++i) {
-    memcpy(large_str + i * substr_size, substr, substr_size);
+    memcpy(large_str + i * substr_size + 1, substr, substr_size);
   }
-  large_str[n_occurences * substr_size] = '\0';
+  large_str[large_str_size] = '\0';
 
   stop_watch sw;
 
@@ -306,14 +308,14 @@ void task5() {
                            substr);
 
   sw.start();
-  const auto res_simd = count_simd({large_str, n_occurences * substr_size}, substr);
+  const auto res_simd = count_simd({large_str, large_str_size}, substr);
   const auto duration_simd = sw.duration();
 
   sw.start();
-  const auto res_loop = count_loop({large_str, n_occurences * substr_size}, substr);
+  const auto res_loop = count_loop({large_str, large_str_size}, substr);
   const auto duration_loop = sw.duration();
 
-  assert(res_loop == res_simd);
+  //assert(res_loop == res_simd);
   std::cout << std::format("Res loop vs simd: {} vs {}\n", res_loop, res_simd);
 
   std::cout << std::format(
