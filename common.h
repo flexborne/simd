@@ -7,6 +7,8 @@
 #include <format>
 #include <string_view>
 
+constexpr inline auto simd_alignment = 32uz;
+
 // unaligned
 void sum_simd_u(const int* a, const int* b, int* c, size_t n) noexcept;
 

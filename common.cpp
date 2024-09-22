@@ -173,9 +173,9 @@ void matmul_simd_u(const float* a, const float* b, float* c, size_t M, size_t N,
 [[nodiscard]] size_t count_simd(std::string_view str,
                                 std::string_view substr) noexcept {
   assert(!substr.empty());
-  assert(substr.size() <= 32 && "Longer substrings are not supported currently");
+  assert(substr.size() <= simd_alignment && "Longer substrings are not supported currently");
 
-  if (substr.size() > str.size() || substr.size() > 32) [[unlikely]] {
+  if (substr.size() > str.size() || substr.size() > simd_alignment) [[unlikely]] {
     return 0;
   }
 
@@ -187,7 +187,8 @@ void matmul_simd_u(const float* a, const float* b, float* c, size_t M, size_t N,
 
   __m256i substr_vector = _mm256_load_si256((const __m256i*)(substr.data()));
 
-  const bool aligned = substr.size() == 32;   // aligned if the substring is 32 bytes long: exact bathes with exact loads
+  // aligned if the substring is 32 bytes long: exact bathes with exact loads
+  const bool aligned = substr.size() == simd_alignment;   
   for (size_t i = 0; i < end_simd; i += batch_size) {
     __m256i str_chunk = aligned ? _mm256_load_si256((const __m256i*)(&str[i])) : _mm256_loadu_si256((const __m256i*)(&str[i]));
     __m256i cmp_result = _mm256_cmpeq_epi8(str_chunk, substr_vector);

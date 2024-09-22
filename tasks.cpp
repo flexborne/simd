@@ -106,8 +106,6 @@ void task2(bool print_arrays) {
   using namespace t2;
   using type = int;
 
-  constexpr auto simd_alignment = 32uz;
-
   std::cout << std::format("TASK 2, N = {}\n", N);
 
   stop_watch sw;
@@ -148,7 +146,6 @@ void task2(bool print_arrays) {
 
 namespace t3 {
 constexpr auto N = 1'000'000uz;
-constexpr auto simd_alignment = 32uz;
 
 using type = float;
 
@@ -219,7 +216,6 @@ namespace t4 {
 constexpr auto M = 1000uz;
 constexpr auto N = 1000uz;
 constexpr auto K = 1000uz;
-constexpr auto simd_alignment = 32uz;
 
 using type = float;
 
@@ -281,7 +277,6 @@ void task4(bool print_arrays) {
 
 namespace t5 {
 constexpr auto n_occurences = 500;
-constexpr auto simd_alignment = 32uz;
 }  // namespace t5
 
 void task5() {
