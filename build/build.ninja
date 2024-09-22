@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: simd
-# Configurations: Debug
+# Configurations: Release
 # =============================================================================
 
 #############################################
@@ -24,7 +24,7 @@ ninja_required_version = 1.5
 #############################################
 # Set configuration variable for custom commands.
 
-CONFIGURATION = Debug
+CONFIGURATION = Release
 # =============================================================================
 # Include auxiliary files.
 
@@ -49,21 +49,21 @@ cmake_ninja_workdir = /home/sashka/Projects/simd/build/
 
 build cmake_object_order_depends_target_simd: phony || CMakeFiles/simd.dir
 
-build CMakeFiles/simd.dir/main.cpp.o: CXX_COMPILER__simd_Debug /home/sashka/Projects/simd/main.cpp || cmake_object_order_depends_target_simd
+build CMakeFiles/simd.dir/main.cpp.o: CXX_COMPILER__simd_Release /home/sashka/Projects/simd/main.cpp || cmake_object_order_depends_target_simd
   DEP_FILE = CMakeFiles/simd.dir/main.cpp.o.d
-  FLAGS = -g -mavx2 -std=gnu++2b
+  FLAGS = -O3 -DNDEBUG -mavx2 -std=gnu++2b
   OBJECT_DIR = CMakeFiles/simd.dir
   OBJECT_FILE_DIR = CMakeFiles/simd.dir
 
-build CMakeFiles/simd.dir/common.cpp.o: CXX_COMPILER__simd_Debug /home/sashka/Projects/simd/common.cpp || cmake_object_order_depends_target_simd
+build CMakeFiles/simd.dir/common.cpp.o: CXX_COMPILER__simd_Release /home/sashka/Projects/simd/common.cpp || cmake_object_order_depends_target_simd
   DEP_FILE = CMakeFiles/simd.dir/common.cpp.o.d
-  FLAGS = -g -mavx2 -std=gnu++2b
+  FLAGS = -O3 -DNDEBUG -mavx2 -std=gnu++2b
   OBJECT_DIR = CMakeFiles/simd.dir
   OBJECT_FILE_DIR = CMakeFiles/simd.dir
 
-build CMakeFiles/simd.dir/tasks.cpp.o: CXX_COMPILER__simd_Debug /home/sashka/Projects/simd/tasks.cpp || cmake_object_order_depends_target_simd
+build CMakeFiles/simd.dir/tasks.cpp.o: CXX_COMPILER__simd_Release /home/sashka/Projects/simd/tasks.cpp || cmake_object_order_depends_target_simd
   DEP_FILE = CMakeFiles/simd.dir/tasks.cpp.o.d
-  FLAGS = -g -mavx2 -std=gnu++2b
+  FLAGS = -O3 -DNDEBUG -mavx2 -std=gnu++2b
   OBJECT_DIR = CMakeFiles/simd.dir
   OBJECT_FILE_DIR = CMakeFiles/simd.dir
 
@@ -75,8 +75,8 @@ build CMakeFiles/simd.dir/tasks.cpp.o: CXX_COMPILER__simd_Debug /home/sashka/Pro
 #############################################
 # Link the executable simd
 
-build simd: CXX_EXECUTABLE_LINKER__simd_Debug CMakeFiles/simd.dir/main.cpp.o CMakeFiles/simd.dir/common.cpp.o CMakeFiles/simd.dir/tasks.cpp.o
-  FLAGS = -g
+build simd: CXX_EXECUTABLE_LINKER__simd_Release CMakeFiles/simd.dir/main.cpp.o CMakeFiles/simd.dir/common.cpp.o CMakeFiles/simd.dir/tasks.cpp.o
+  FLAGS = -O3 -DNDEBUG
   OBJECT_DIR = CMakeFiles/simd.dir
   POST_BUILD = :
   PRE_LINK = :
