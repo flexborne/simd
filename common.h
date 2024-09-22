@@ -42,7 +42,6 @@ void matmul_simd_u(const float* a, const float* b, float* c, size_t M, size_t N,
 
 // aligned if substr.size() is 32 bytes exactly
 // does not support substr with size > 32
-[[nodiscard]] size_t count_simd(const char* str, const char* substr, size_t n) noexcept;
 [[nodiscard]] size_t count_simd(std::string_view str, std::string_view substr) noexcept;
 
 template <class T>

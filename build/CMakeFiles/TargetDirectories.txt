@@ -1,3 +1,0 @@
-/home/sashka/Projects/simd/build/CMakeFiles/simd.dir
-/home/sashka/Projects/simd/build/CMakeFiles/edit_cache.dir
-/home/sashka/Projects/simd/build/CMakeFiles/rebuild_cache.dir

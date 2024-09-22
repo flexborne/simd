@@ -77,19 +77,5 @@
 				"program": "${command:cmake.launchTargetPath}",
 			}
 		],
-	},
-	"extensions": {
-		"recommendations": [
-			"ms-vscode.cpptools",
-			"hars.cppsnippets",
-			"tdennis4496.cmantic",
-			"llvm-vs-code-extensions.vscode-clangd",
-			"twxs.cmake",
-			"ms-vscode.cmake-tools",
-			"atlassian.atlascode",
-			"tonka3000.qtvsctools",
-			"vadimcn.vscode-lldb",
-			"ms-azuretools.vscode-docker"
-		],
-	},
+	}
 }
