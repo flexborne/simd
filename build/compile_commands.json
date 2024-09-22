@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/sashka/Projects/simd/build",
+  "command": "/usr/bin/clang++ -g -mavx2 -std=gnu++2b -o CMakeFiles/simd.dir/main.cpp.o -c /home/sashka/Projects/simd/main.cpp",
+  "file": "/home/sashka/Projects/simd/main.cpp"
+},
+{
+  "directory": "/home/sashka/Projects/simd/build",
+  "command": "/usr/bin/clang++ -g -mavx2 -std=gnu++2b -o CMakeFiles/simd.dir/common.cpp.o -c /home/sashka/Projects/simd/common.cpp",
+  "file": "/home/sashka/Projects/simd/common.cpp"
+},
+{
+  "directory": "/home/sashka/Projects/simd/build",
+  "command": "/usr/bin/clang++ -g -mavx2 -std=gnu++2b -o CMakeFiles/simd.dir/tasks.cpp.o -c /home/sashka/Projects/simd/tasks.cpp",
+  "file": "/home/sashka/Projects/simd/tasks.cpp"
+}
+]
