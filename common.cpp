@@ -116,7 +116,7 @@ void matmul_loop(const float* a, const float* b, float* c, size_t M, size_t N,
 
 // note: because of the way vectors are stored in memory, we cannot use unaligned loads/stores
 // I mean that number of columns may be arbitrary, so we cannot guarantee that load/store is gonna be aligned
-void matmul_simd(const float* a, const float* b, float* c, size_t M, size_t N,
+void matmul_simd_u(const float* a, const float* b, float* c, size_t M, size_t N,
                  size_t K) noexcept {
   assert(a && b && c);
   assert(N > 0 && K > 0 && M > 0);
@@ -148,4 +148,58 @@ void matmul_simd(const float* a, const float* b, float* c, size_t M, size_t N,
       }
     }
   }
+}
+
+[[nodiscard]] size_t count_loop(std::string_view str,
+                                std::string_view substr) noexcept {
+  assert(!substr.empty());
+
+  if (substr.size() > str.size()) [[unlikely]] {
+    return 0;
+  }
+
+  size_t count = 0;
+
+  for (size_t i = 0; i <= str.size() - substr.size(); ++i) {
+    if (str.substr(i, substr.size()) == substr) {
+      ++count;
+      i += substr.size() - 1;
+    }
+  }
+
+  return count;
+}
+
+[[nodiscard]] size_t count_simd(std::string_view str,
+                                std::string_view substr) noexcept {
+  assert(!substr.empty());
+  assert(substr.size() <= 32 && "Longer substrings are not supported currently");
+
+  if (substr.size() > str.size() || substr.size() > 32) [[unlikely]] {
+    return 0;
+  }
+
+  size_t count = 0;
+
+  const auto batch_size = substr.size();
+
+  const auto end_simd = (str.size() / batch_size) * batch_size;
+
+  __m256i substr_vector = _mm256_load_si256((const __m256i*)(substr.data()));
+
+  const bool aligned = substr.size() == 32;   // aligned if the substring is 32 bytes long: exact bathes with exact loads
+  for (size_t i = 0; i < end_simd; i += batch_size) {
+    __m256i str_chunk = aligned ? _mm256_load_si256((const __m256i*)(&str[i])) : _mm256_loadu_si256((const __m256i*)(&str[i]));
+    __m256i cmp_result = _mm256_cmpeq_epi8(str_chunk, substr_vector);
+
+    int mask = _mm256_movemask_epi8(cmp_result);
+    int substr_mask = (1 << substr.size()) - 1;
+    count += ((mask & substr_mask) == substr_mask);
+  }
+
+  for (size_t i = end_simd; i <= str.size() - substr.size(); ++i) {
+    count += (str.substr(i, substr.size()) == substr);
+  }
+
+  return count;
 }

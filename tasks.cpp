@@ -3,6 +3,8 @@
 #include "common.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
 #include <format>
 #include <iostream>
 #include <ranges>
@@ -37,7 +39,7 @@ float generate_random_number(int f_min, int f_max) {
 }
 
 template <class T>
-constexpr inline void init_arr(std::span<T> arr, int f_min = -10, int f_max = 10) {
+void init_arr(std::span<T> arr, int f_min = -10, int f_max = 10) {
   for (size_t i = 0; i < arr.size(); ++i) {
     arr[i] = generate_random_number(f_min, f_max);
   }
@@ -52,22 +54,16 @@ constexpr bool equal(float a, float b, float eps = 1e-2) noexcept {
 namespace t1 {
 
 constexpr inline auto N = 100000uz;
-using array_t = std::array<int, N>;
+using type = int;
+using array_t = std::array<type, N>;
 
-const array_t arr1 = []() {
-  array_t arr = {};
-  init_arr<int>(arr);
+auto init_arr() noexcept {
+  array_t arr;
+  ::init_arr<type>(arr);
   return arr;
-}();
-
-const array_t arr2 = []() {
-  array_t arr = {};
-  init_arr<int>(arr);
-  return arr;
-}();
+};
 
 }  // namespace t1
-
 
 void task1(bool print_arrays) {
   using namespace t1;
@@ -75,6 +71,9 @@ void task1(bool print_arrays) {
   std::cout << std::format("TASK 1, N = {}\n", N);
 
   stop_watch sw;
+
+  const array_t arr1 = init_arr();
+  const array_t arr2 = init_arr();
 
   // SIMD in the first place, so cache is warm enough for the loop
   // Even though it's not the best way to measure performance
@@ -100,7 +99,7 @@ void task1(bool print_arrays) {
 }
 
 namespace t2 {
-  constexpr auto N = 10000000uz;
+constexpr auto N = 10'000'000uz;
 }  // namespace t2
 
 void task2(bool print_arrays) {
@@ -148,7 +147,7 @@ void task2(bool print_arrays) {
 }
 
 namespace t3 {
-constexpr auto N = 1000000uz;
+constexpr auto N = 1'000'000uz;
 constexpr auto simd_alignment = 32uz;
 
 using type = float;
@@ -187,7 +186,7 @@ void task3(bool print_arrays) {
     print<type>(res_loop, "Loop res:");
     print<type>(std::span{res_simd, N}, "SIMD res:");
   }
-  
+
   sw.start();
   const auto loop_product = dot_product_loop(arr1, arr2, N);
   const auto duration_loop_product = sw.duration();
@@ -200,7 +199,8 @@ void task3(bool print_arrays) {
   // so it's okay, if fails
   assert(equal(loop_product, simd_product, 1.f));
 
-  std::cout << std::format("Products loop vs simd: {} vs {}\n", loop_product, simd_product);
+  std::cout << std::format("Products loop vs simd: {} vs {}\n", loop_product,
+                           simd_product);
 
   std::cout << std::format(
       "Durations loop vs simd:\ndot product: {} vs {}, simd faster by: {}, "
@@ -216,29 +216,29 @@ void task3(bool print_arrays) {
 }
 
 namespace t4 {
-  constexpr auto M = 1000uz;
-  constexpr auto N = 1000uz;
-  constexpr auto K = 1000uz;
-  constexpr auto simd_alignment = 32uz;
+constexpr auto M = 1000uz;
+constexpr auto N = 1000uz;
+constexpr auto K = 1000uz;
+constexpr auto simd_alignment = 32uz;
 
-  using type = float;
+using type = float;
 
-  auto init_arr(size_t n) {
-    auto* arr = allocate_aligned_array<type>(n, simd_alignment);
-    ::init_arr<type>({arr, n}, -1, 1);
-    return arr;
-  };
+auto init_arr(size_t n) {
+  auto* arr = allocate_aligned_array<type>(n, simd_alignment);
+  ::init_arr<type>({arr, n}, -1, 1);
+  return arr;
+};
 
-  void print(const type* arr, size_t rows, size_t cols, std::string_view msg) {
-    std::cout << msg << '\n';
-    for (size_t i = 0; i < rows; ++i) {
-      for (size_t j = 0; j < cols; ++j) {
-        std::cout << arr[i * cols + j] << ' ';
-      }
-      std::cout << '\n';
+void print(const type* arr, size_t rows, size_t cols, std::string_view msg) {
+  std::cout << msg << '\n';
+  for (size_t i = 0; i < rows; ++i) {
+    for (size_t j = 0; j < cols; ++j) {
+      std::cout << arr[i * cols + j] << ' ';
     }
+    std::cout << '\n';
   }
-} 
+}
+}  // namespace t4
 
 void task4(bool print_arrays) {
   using namespace t4;
@@ -251,19 +251,17 @@ void task4(bool print_arrays) {
   auto* B = init_arr(N * K);
   auto* res_simd = allocate_aligned_array<type>(M * K, simd_alignment);
   std::vector<type> res_loop(M * K);
-  
+
+  sw.start();
+  matmul_simd_u(A, B, res_simd, M, N, K);
+  const auto duration_simd = sw.duration();
+
   sw.start();
   matmul_loop(A, B, res_loop.data(), M, N, K);
   const auto duration_loop = sw.duration();
 
-  sw.start();
-  matmul_simd(A, B, res_simd, M, N, K);
-  const auto duration_simd = sw.duration();
-
   assert(std::ranges::equal(res_loop, std::span{res_simd, res_loop.size()},
-                            [](auto a, auto b) {
-                              return equal(a, b);
-                            }));
+                            [](auto a, auto b) { return equal(a, b); }));
 
   if (print_arrays) {
     print(res_loop.data(), N, K, "Loop res:");
@@ -279,4 +277,54 @@ void task4(bool print_arrays) {
   free_aligned_array(A);
   free_aligned_array(B);
   free_aligned_array(res_simd);
+}
+
+namespace t5 {
+constexpr auto n_occurences = 500;  // number of occurences
+constexpr auto simd_alignment = 32uz;
+}  // namespace t5
+
+void task5() {
+  using namespace t5;
+
+  auto* substr = []() {
+    // random <=32(!) bytes string
+    constexpr static auto data = "abcdedqwe";
+    const auto len = strlen(data);
+    char* res = allocate_aligned_array<char>(len, simd_alignment);
+    memcpy(res, data, strlen(data));
+    res[len] = '\0';
+    return res;
+  }();
+  const auto substr_size = strlen(substr);
+  assert(substr_size <= 32);
+
+  char* large_str = allocate_aligned_array<char>(n_occurences * substr_size, simd_alignment);
+  for (size_t i = 0; i < n_occurences; ++i) {
+    memcpy(large_str + i * substr_size, substr, substr_size);
+  }
+  large_str[n_occurences * substr_size] = '\0';
+
+  stop_watch sw;
+
+  std::cout << std::format("TASK 5, string = {}, substring = {}\n", large_str,
+                           substr);
+
+  sw.start();
+  const auto res_simd = count_simd({large_str, n_occurences * substr_size}, substr);
+  const auto duration_simd = sw.duration();
+
+  sw.start();
+  const auto res_loop = count_loop({large_str, n_occurences * substr_size}, substr);
+  const auto duration_loop = sw.duration();
+
+  assert(res_loop == res_simd);
+  std::cout << std::format("Res loop vs simd: {} vs {}\n", res_loop, res_simd);
+
+  std::cout << std::format(
+      "Durations loop vs simd:\n{} vs {}, simd faster by: {}\n", duration_loop,
+      duration_simd, static_cast<double>(duration_loop) / duration_simd);
+
+  free_aligned_array(large_str);
+  free_aligned_array(substr);
 }

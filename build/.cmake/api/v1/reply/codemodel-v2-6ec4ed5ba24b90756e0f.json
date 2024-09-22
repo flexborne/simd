@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.22"
@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Release",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "simd::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-simd-Release-6a6e1993a0ef36320671.json",
+					"jsonFile" : "target-simd-Debug-2f1227548f523d8b6393.json",
 					"name" : "simd",
 					"projectIndex" : 0
 				}

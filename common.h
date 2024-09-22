@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <format>
+#include <string_view>
 
 // unaligned
 void sum_simd_u(const int* a, const int* b, int* c, size_t n) noexcept;
@@ -34,7 +35,15 @@ void sum_loop(const T* a, const T* b, T* c, size_t n) noexcept {
 // K: Number of columns in matrix B (and the number of columns in the result matrix C)
 void matmul_loop(const float* a, const float* b, float* c, size_t M, size_t N, size_t K) noexcept;
 
-void matmul_simd(const float* a, const float* b, float* c, size_t M, size_t N, size_t K) noexcept;
+void matmul_simd_u(const float* a, const float* b, float* c, size_t M, size_t N, size_t K) noexcept;
+
+/// @return number of occurences of substring in string
+[[nodiscard]] size_t count_loop(std::string_view str, std::string_view substr) noexcept;
+
+// aligned if substr.size() is 32 bytes exactly
+// does not support substr with size > 32
+[[nodiscard]] size_t count_simd(const char* str, const char* substr, size_t n) noexcept;
+[[nodiscard]] size_t count_simd(std::string_view str, std::string_view substr) noexcept;
 
 template <class T>
 T* allocate_aligned_array(size_t size, size_t alignment) {
