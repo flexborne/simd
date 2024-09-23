@@ -12,6 +12,7 @@ global main
 
 section .text
     extern posix_memalign
+    extern free
 
 
 main:
@@ -27,6 +28,9 @@ main:
     vmovdqu ymm1, [add_one]
     vaddpd ymm0, ymm0, ymm1
     vmovdqa [rdi], ymm0   
+
+    mov rdi, [aligned_mem]   
+    call free               
 
 exit:
     mov rax, 1
