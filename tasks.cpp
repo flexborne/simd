@@ -286,7 +286,7 @@ void task5() {
     // random <=32(!) bytes string
     constexpr static auto data = "abcdedqwe";
     const auto len = strlen(data);
-    char* res = allocate_aligned_array<char>(len, simd_alignment);
+    char* res = allocate_aligned_array<char>(len + 1, simd_alignment);
     memcpy(res, data, strlen(data));
     res[len] = '\0';
     return res;
@@ -294,7 +294,7 @@ void task5() {
   const auto substr_size = strlen(substr);
   assert(substr_size <= 32);
 
-  const auto large_str_size = n_occurences * substr_size + 1;
+  const auto large_str_size = n_occurences * substr_size + 2;
   char* large_str = allocate_aligned_array<char>(large_str_size, simd_alignment);
   large_str[0] = 'A';
   for (size_t i = 0; i < n_occurences; ++i) {
