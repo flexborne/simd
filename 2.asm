@@ -6,7 +6,8 @@ section .data
 
 
 section .bss
-    aligned_mem resq 1
+    aligned_mem1 resq 1
+    aligned_mem2 resq 2
 
 global main
 
@@ -16,20 +17,35 @@ section .text
 
 
 main:
-    lea rdi, [aligned_mem]
+    lea rdi, [aligned_mem1]
     mov rsi, alignment
     mov rdx, array_size
     mov rax, 0
     call posix_memalign
 
-    mov rdi, [aligned_mem]
+    lea rdi, [aligned_mem2]
+    mov rsi, alignment
+    mov rdx, array_size
+    mov rax, 0
+    call posix_memalign
     
+    mov rdi, [aligned_mem1]
+    call initialize_array
+
+    mov rdi, [aligned_mem2]
+    call initialize_array
+
+    mov rdi, [aligned_mem1]
+    mov rsi, [aligned_mem2]
+
     vmovdqa ymm0, [rdi]
-    vmovdqu ymm1, [add_one]
+    vmovdqa ymm1, [rsi]
     vaddpd ymm0, ymm0, ymm1
     vmovdqa [rdi], ymm0   
 
-    mov rdi, [aligned_mem]   
+    mov rdi, [aligned_mem1]   
+    call free       
+    mov rdi, [aligned_mem2]   
     call free               
 
 exit:
