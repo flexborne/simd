@@ -36,8 +36,11 @@ main:
 
     vmovdqa ymm0, [rdi]
     vmovdqa ymm1, [rsi]
-    vaddpd ymm0, ymm0, ymm1
-    vmovdqa [rdi], ymm0   
+
+    vmulpd ymm0, ymm0, ymm1
+
+    vextractf128 xmm2, ymm0, 1  
+    vpaddd xmm0, xmm0, xmm2      
 
     mov rdi, [aligned_mem1]   
     call free       
