@@ -15,7 +15,6 @@ section .text
     extern posix_memalign
     extern free
 
-
 main:
     lea rdi, [aligned_mem1]
     mov rsi, alignment
