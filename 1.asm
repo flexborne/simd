@@ -11,10 +11,10 @@ section .text
 
 ; Input: rdi = pointer to array1, rsi = pointer to array2, rdx = pointer to result
 add_arrays:
-    vmovdqa ymm0, [rdi]
-    vmovdqa ymm1, [rsi]
+    vmovdqu ymm0, [rdi]
+    vmovdqu ymm1, [rsi]
     vaddpd ymm0, ymm0, ymm1
-    vmovdqa [rdx], ymm0
+    vmovdqu [rdx], ymm0
 
     ret
 
